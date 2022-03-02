@@ -1,5 +1,5 @@
 import { Form, LoaderFunction, useLoaderData } from "remix";
-import { PLACEMENTS } from "~/placements.server";
+import { PLACEMENTS, Placement } from "~/placements.server";
 import { buildXML, XMLOptions } from "~/xml.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -14,6 +14,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     privacyLevel: getParam("privacy_level"),
     selectionHeight: getParam("selection_height"),
     selectionWidth: getParam("selection_width"),
+    placements: url.searchParams.getAll("placements"),
   };
   return {
     xml: buildXML(opts),
@@ -23,26 +24,33 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 type FieldProps = {
   name: string;
-  inputName: string;
+  inputName?: string;
   type?: string;
   defaultValue?: string;
+  children?: React.ReactNode;
 };
 const Field = ({
   name,
   inputName,
   type = "string",
   defaultValue = "",
+  children,
 }: FieldProps) => (
   <tr>
     <td>{name}</td>
     <td>
-      <input name={inputName} type={type} defaultValue={defaultValue}></input>
+      {children}
+      {!children && (
+        <input name={inputName} type={type} defaultValue={defaultValue}></input>
+      )}
     </td>
   </tr>
 );
 
 export default function Index() {
-  const { xml } = useLoaderData();
+  const { xml, placements }: { xml: string; placements: Placement[] } =
+    useLoaderData();
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
       <h1>LTI 1.1 Test Tool</h1>
@@ -86,6 +94,13 @@ export default function Index() {
             type="number"
             defaultValue="500"
           ></Field>
+          <Field name="Placements">
+            <select name="placements" multiple>
+              {placements.map((p) => (
+                <option value={p.key}>{p.name}</option>
+              ))}
+            </select>
+          </Field>
         </table>
         <button type="submit">Create</button>
       </Form>
