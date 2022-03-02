@@ -1,3 +1,7 @@
+import getConfig from "./config.server";
+
+const config = getConfig();
+
 export type XMLOptions = {
   title?: string;
   description?: string;
@@ -10,8 +14,8 @@ export type XMLOptions = {
 const defaults: XMLOptions = {
   title: "LTI 1.1 Test Tool",
   description: "the most basic 1.1 tool ever",
-  domain: "localhost:3000", // TODO: replace with env var,
-  launchUrl: "http://localhost:3000/launch", // TODO: replace with env var,
+  domain: config.DOMAIN,
+  launchUrl: config.LAUNCH_URL,
   privacyLevel: "public",
   placements: ["course_navigation"],
 };
