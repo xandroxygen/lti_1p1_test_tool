@@ -53,7 +53,7 @@ export const buildXML = (opts: XMLOptions) => {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
         <cartridge_basiclti_link ${headerProps}>
-            <blti:launch_url>http://localhost:3000/launch</blti:launch_url>
+            <blti:launch_url>${finalOpts.launchUrl}</blti:launch_url>
             <blti:title>${finalOpts.title}</blti:title>
             <blti:description>${finalOpts.description}</blti:description>
             <blti:extensions platform="canvas.instructure.com">
