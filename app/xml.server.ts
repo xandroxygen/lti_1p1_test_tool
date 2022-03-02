@@ -1,13 +1,16 @@
 import getConfig from "./config.server";
+import { PLACEMENTS_BY_KEY } from "./placements.server";
 
 const config = getConfig();
 
 export type XMLOptions = {
-  title?: string;
+  title: string;
+  domain: string;
+  launchUrl: string;
   description?: string;
-  domain?: string;
-  launchUrl?: string;
   privacyLevel?: string;
+  selectionHeight?: string;
+  selectionWidth?: string;
   placements?: string[];
 };
 
@@ -20,9 +23,26 @@ const defaults: XMLOptions = {
   placements: ["course_navigation"],
 };
 
-const placementXML = (p: string) => `
+const property = (name: string, value?: string) => {
+  if (!value) {
+    return "";
+  }
+
+  return `<lticm:property name="${name}">${value}</lticm:property>`;
+};
+
+const placementXML = (
+  p: string,
+  url: string,
+  selectionWidth?: string,
+  selectionHeight?: string
+) => `
 <lticm:options name="${p}">
-    <lticm:property name="enabled">true</lticm:property>
+    ${property("enabled", "true")}
+    ${property("url", `${url}?placement=${p}`)}
+    ${property("text", PLACEMENTS_BY_KEY[p].name)}
+    ${property("selection_width", selectionWidth)}
+    ${property("selection_height", selectionHeight)}
 </lticm:options>
 `;
 
@@ -49,23 +69,30 @@ const compact = (obj) => {
 
 export const buildXML = (opts: XMLOptions) => {
   compact(opts);
-  const finalOpts = { ...defaults, ...opts };
+  const {
+    launchUrl,
+    title,
+    description,
+    domain,
+    privacyLevel,
+    placements,
+    selectionHeight,
+    selectionWidth,
+  } = { ...defaults, ...opts };
 
   return `<?xml version="1.0" encoding="UTF-8"?>
         <cartridge_basiclti_link ${headerProps}>
-            <blti:launch_url>${finalOpts.launchUrl}</blti:launch_url>
-            <blti:title>${finalOpts.title}</blti:title>
-            <blti:description>${finalOpts.description}</blti:description>
+            <blti:launch_url>${launchUrl}</blti:launch_url>
+            <blti:title>${title}</blti:title>
+            <blti:description>${description}</blti:description>
             <blti:extensions platform="canvas.instructure.com">
-                <lticm:property name="domain">${
-                  finalOpts.domain
-                }</lticm:property>
-                <lticm:property name="text">${finalOpts.title}</lticm:property>
+                <lticm:property name="domain">${domain}</lticm:property>
+                <lticm:property name="text">${title}</lticm:property>
                 <lticm:property name="oauth_compliant">true</lticm:property>
-                <lticm:property name="privacy_level">${
-                  finalOpts.privacyLevel
-                }</lticm:property>
-                ${finalOpts.placements?.map((p) => placementXML(p))}
+                <lticm:property name="privacy_level">${privacyLevel}</lticm:property>
+                ${placements?.map((p) =>
+                  placementXML(p, launchUrl, selectionWidth, selectionHeight)
+                )}
             </blti:extensions>
         </cartridge_basiclti_link>
     </xml>`;

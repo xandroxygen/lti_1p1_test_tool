@@ -8,14 +8,38 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const opts: XMLOptions = {
     title: getParam("tool_name"),
+    description: getParam("description"),
     domain: getParam("tool_domain"),
     launchUrl: getParam("launch_url"),
+    privacyLevel: getParam("privacy_level"),
+    selectionHeight: getParam("selection_height"),
+    selectionWidth: getParam("selection_width"),
   };
   return {
     xml: buildXML(opts),
     placements: PLACEMENTS,
   };
 };
+
+type FieldProps = {
+  name: string;
+  inputName: string;
+  type?: string;
+  defaultValue?: string;
+};
+const Field = ({
+  name,
+  inputName,
+  type = "string",
+  defaultValue = "",
+}: FieldProps) => (
+  <tr>
+    <td>{name}</td>
+    <td>
+      <input name={inputName} type={type} defaultValue={defaultValue}></input>
+    </td>
+  </tr>
+);
 
 export default function XMLBuilder() {
   const { xml } = useLoaderData();
@@ -29,44 +53,23 @@ export default function XMLBuilder() {
       <p>(Fields left blank will have defaults provided)</p>
       <Form method="get">
         <table>
-          <tr>
-            <td>Tool Name</td>
-            <td>
-              <input name="tool_name" type="string"></input>
-            </td>
-          </tr>
-          <tr>
-            <td>Tool Domain</td>
-            <td>
-              <input name="tool_domain" type="string"></input>
-            </td>
-          </tr>
-          <tr>
-            <td>Launch URL</td>
-            <td>
-              <input name="launch_url" type="string"></input>
-            </td>
-          </tr>
-          <tr>
-            <td>Selection Height</td>
-            <td>
-              <input
-                name="selection_height"
-                type="number"
-                defaultValue="500"
-              ></input>
-            </td>
-          </tr>
-          <tr>
-            <td>Selection Width</td>
-            <td>
-              <input
-                name="selection_width"
-                type="number"
-                defaultValue="500"
-              ></input>
-            </td>
-          </tr>
+          <Field name="Tool Name" inputName="tool_name"></Field>
+          <Field name="Description" inputName="description"></Field>
+          <Field name="Tool Domain" inputName="tool_domain"></Field>
+          <Field name="Launch URL" inputName="launch_url"></Field>
+          <Field name="Privacy Level" inputName="privacy_level"></Field>
+          <Field
+            name="Selection Height"
+            inputName="selection_height"
+            type="number"
+            defaultValue="500"
+          ></Field>
+          <Field
+            name="Selection Width"
+            inputName="selection_width"
+            type="number"
+            defaultValue="500"
+          ></Field>
         </table>
         <button type="submit">Create</button>
       </Form>

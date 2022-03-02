@@ -2,7 +2,13 @@ export const BASIC_LTI_REQUEST = "basic_lti_request";
 export const CONTENT_ITEM_SELECTION = "content_item_selection";
 export const CONTENT_ITEM_SELECTION_REQUEST = "content_item_selection_request";
 
-export const PLACEMENTS = [
+export type Placement = {
+  key: string;
+  name: string;
+  types?: string[];
+};
+
+export const PLACEMENTS: Placement[] = [
   { key: "account_navigation", name: "Account Navigation" },
   {
     key: "assignment_menu",
@@ -90,3 +96,12 @@ export const PLACEMENTS = [
     types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
   },
 ];
+
+export type PlacementHash = {
+  [key: string]: Placement;
+};
+
+export const PLACEMENTS_BY_KEY = PLACEMENTS.reduce((acc: PlacementHash, p) => {
+  acc[p.key] = p;
+  return acc;
+}, {});
