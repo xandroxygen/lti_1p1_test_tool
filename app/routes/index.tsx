@@ -1,6 +1,10 @@
 import { Form, LoaderFunction, useLoaderData } from "remix";
 import { PLACEMENTS, Placement } from "~/placements.server";
 import { buildXML, XMLOptions } from "~/xml.server";
+import {
+  buildErrorTracker,
+  SerializedErrorTracker,
+} from "~/xmlBuilder/errorTracker.server";
 
 const validateCustomFields = (param: string | undefined): string => {
   if (!param) {
@@ -42,28 +46,15 @@ export const loader: LoaderFunction = async ({ request }) => {
     placements: url.searchParams.getAll("placements"),
   };
 
-  const errors: ErrorHash = {};
-  const customFieldsError = validateCustomFields(opts.customFields);
-  if (customFieldsError) {
-    errors.custom_fields = customFieldsError;
-  }
-
-  if (hasErrors(errors)) {
-    return {
-      xml: "Fix errors before regenerating",
-      errors,
-      placements: PLACEMENTS,
-    };
-  }
+  const errorTracker = buildErrorTracker();
+  errorTracker.add("custom_fields", validateCustomFields(opts.customFields));
 
   return {
-    xml: buildXML(opts),
+    xml: errorTracker.hasErrors() ? errorTracker.text : buildXML(opts),
+    errorTracker: errorTracker.toJSON(),
     placements: PLACEMENTS,
-    errors: {},
   };
 };
-
-const hasErrors = (errors: ErrorHash) => Object.keys(errors).length > 0;
 
 type FieldProps = {
   name: string;
@@ -106,17 +97,16 @@ const Field = ({
   </tr>
 );
 
-type ErrorHash = {
-  [key: string]: string;
-};
-
 export default function Index() {
   const {
     xml,
     placements,
-    errors,
-  }: { xml: string; placements: Placement[]; errors: ErrorHash } =
-    useLoaderData();
+    errorTracker,
+  }: {
+    xml: string;
+    placements: Placement[];
+    errorTracker: SerializedErrorTracker;
+  } = useLoaderData();
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
@@ -149,8 +139,8 @@ export default function Index() {
         </a>{" "}
         for information on these options)
       </p>
-      {hasErrors(errors) && (
-        <p style={{ color: "red" }}>Fix errors before regenerating</p>
+      {errorTracker.hasErrors && (
+        <p style={{ color: "red" }}>{errorTracker.text}</p>
       )}
       <Form method="get">
         <table>
@@ -182,7 +172,7 @@ export default function Index() {
           <Field
             name="Custom Fields"
             description="(key=value, one per line)"
-            error={errors.custom_fields}
+            error={errorTracker.errors.custom_fields}
           >
             <textarea name="custom_fields" rows={3} cols={24}></textarea>
           </Field>
