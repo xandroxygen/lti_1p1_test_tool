@@ -16,6 +16,7 @@ export type XMLOptions = {
   privacyLevel?: string;
   selectionHeight?: string;
   selectionWidth?: string;
+  oauthCompliant?: boolean;
   placements?: string[];
 };
 
@@ -28,7 +29,7 @@ const defaults: XMLOptions = {
   placements: ["course_navigation"],
 };
 
-const property = (name: string, value?: string) => {
+const property = (name: string, value?: string | boolean) => {
   if (!value) {
     return "";
   }
@@ -101,6 +102,7 @@ export const buildXML = (opts: XMLOptions) => {
     placements,
     selectionHeight,
     selectionWidth,
+    oauthCompliant,
   } = { ...defaults, ...opts };
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -109,10 +111,10 @@ export const buildXML = (opts: XMLOptions) => {
             <blti:title>${title}</blti:title>
             <blti:description>${description}</blti:description>
             <blti:extensions platform="canvas.instructure.com">
-                <lticm:property name="domain">${domain}</lticm:property>
-                <lticm:property name="text">${title}</lticm:property>
-                <lticm:property name="oauth_compliant">true</lticm:property>
-                <lticm:property name="privacy_level">${privacyLevel}</lticm:property>
+                ${property("domain", domain)}
+                ${property("text", title)}
+                ${property("oauth_compliant", oauthCompliant)}
+                ${property("privacy_level", privacyLevel)}
                 ${placements?.map((p) =>
                   placementXML(p, launchUrl, selectionWidth, selectionHeight)
                 )}

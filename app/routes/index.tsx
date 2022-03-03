@@ -5,6 +5,7 @@ import { buildXML, XMLOptions } from "~/xml.server";
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const getParam = (p: string) => url.searchParams.get(p) as string;
+  console.log(url.searchParams.keys());
 
   const opts: XMLOptions = {
     title: getParam("tool_name"),
@@ -14,8 +15,12 @@ export const loader: LoaderFunction = async ({ request }) => {
     privacyLevel: getParam("privacy_level"),
     selectionHeight: getParam("selection_height"),
     selectionWidth: getParam("selection_width"),
+    oauthCompliant: Array.from(url.searchParams.keys()).includes(
+      "oauth_compliant"
+    ),
     placements: url.searchParams.getAll("placements"),
   };
+  console.log({ opts });
   return {
     xml: buildXML(opts),
     placements: PLACEMENTS,
@@ -82,6 +87,11 @@ export default function Index() {
           <Field name="Tool Domain" inputName="tool_domain"></Field>
           <Field name="Launch URL" inputName="launch_url"></Field>
           <Field name="Privacy Level" inputName="privacy_level"></Field>
+          <Field
+            name="OAuth Compliant (launch URLs with query parameters will not be copied to the POST body when true)"
+            inputName="oauth_compliant"
+            type="checkbox"
+          ></Field>
           <Field
             name="Selection Height"
             inputName="selection_height"
