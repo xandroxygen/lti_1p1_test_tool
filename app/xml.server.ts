@@ -1,5 +1,10 @@
 import getConfig from "./config.server";
-import { PLACEMENTS_BY_KEY } from "./placements.server";
+import {
+  BASIC_LTI_REQUEST,
+  CONTENT_ITEM_SELECTION,
+  CONTENT_ITEM_SELECTION_REQUEST,
+  PLACEMENTS_BY_KEY,
+} from "./placements.server";
 
 const config = getConfig();
 
@@ -31,6 +36,23 @@ const property = (name: string, value?: string) => {
   return `<lticm:property name="${name}">${value}</lticm:property>`;
 };
 
+const placementMessageType = (p: string) => {
+  const placement = PLACEMENTS_BY_KEY[p];
+  if (!placement.types) {
+    return BASIC_LTI_REQUEST;
+  }
+
+  if (placement.types.includes(CONTENT_ITEM_SELECTION_REQUEST)) {
+    return CONTENT_ITEM_SELECTION_REQUEST;
+  }
+
+  if (placement.types.includes(CONTENT_ITEM_SELECTION)) {
+    return CONTENT_ITEM_SELECTION;
+  }
+
+  return BASIC_LTI_REQUEST;
+};
+
 const placementXML = (
   p: string,
   url: string,
@@ -43,6 +65,7 @@ const placementXML = (
     ${property("text", PLACEMENTS_BY_KEY[p].name)}
     ${property("selection_width", selectionWidth)}
     ${property("selection_height", selectionHeight)}
+    ${property("message_type", placementMessageType(p))}
 </lticm:options>
 `;
 
