@@ -5,26 +5,7 @@ import {
   buildErrorTracker,
   SerializedErrorTracker,
 } from "~/xmlBuilder/errorTracker.server";
-
-const validateCustomFields = (param: string | undefined): string => {
-  if (!param) {
-    return "";
-  }
-
-  const allFieldsValid = param.split("\n").every(
-    // allow empty or whitespace-only lines
-    // allow spaces before and after, but not in key or value
-    // allow only one key=value pair per line
-    // allow any characters in value, for example `$Canvas.course.id`
-    (field) => /^\s*$|^\s*\w+=[^=\s]+\s*$/.test(field)
-  );
-
-  if (allFieldsValid) {
-    return "";
-  } else {
-    return "Custom fields must be in key=value format and only one per line!";
-  }
-};
+import buildValidators from "~/xmlBuilder/validators.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
@@ -47,7 +28,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 
   const errorTracker = buildErrorTracker();
-  errorTracker.add("custom_fields", validateCustomFields(opts.customFields));
+  const validators = buildValidators();
+  errorTracker.add("custom_fields", validators.customFields(opts.customFields));
 
   return {
     xml: errorTracker.hasErrors() ? errorTracker.text : buildXML(opts),
