@@ -22,7 +22,7 @@ export default function Launch() {
     })
   );
   return (
-    <div>
+    <div style={{ fontFamily: "system-ui, sans-serif" }}>
       <h1>LTI 1.1 Launch</h1>
       <p style={{ color: "red" }}>{error}</p>
       <table>

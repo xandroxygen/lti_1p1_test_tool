@@ -18,6 +18,7 @@ export type XMLOptions = {
   selectionWidth?: string;
   oauthCompliant?: boolean;
   visibility?: string;
+  customFields?: string;
   placements?: string[];
 };
 
@@ -71,6 +72,18 @@ const placementXML = (
 </lticm:options>
 `;
 
+const customFieldXML = (fields: string) => `
+  <lticm:options name="custom_fields">
+    ${fields
+      .split("\n")
+      .map((field) => {
+        const [key, value] = field.trim().split("=");
+        return property(key, value);
+      })
+      .join("")}
+  </lticm:options>
+`;
+
 const headerProps = `
 xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
 xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
@@ -105,6 +118,7 @@ export const buildXML = (opts: XMLOptions) => {
     selectionWidth,
     oauthCompliant,
     visibility,
+    customFields,
   } = { ...defaults, ...opts };
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -121,6 +135,7 @@ export const buildXML = (opts: XMLOptions) => {
                   "visibility",
                   visibility === "none" ? false : visibility
                 )}
+                ${customFields ? customFieldXML(customFields) : ""}
                 ${placements?.map((p) =>
                   placementXML(p, launchUrl, selectionWidth, selectionHeight)
                 )}

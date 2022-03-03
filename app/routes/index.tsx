@@ -2,9 +2,31 @@ import { Form, LoaderFunction, useLoaderData } from "remix";
 import { PLACEMENTS, Placement } from "~/placements.server";
 import { buildXML, XMLOptions } from "~/xml.server";
 
+const validateCustomFields = (param: string | undefined): string => {
+  if (!param) {
+    return "";
+  }
+
+  const allFieldsValid = param.split("\n").every(
+    // allow empty or whitespace-only lines
+    // allow spaces before and after, but not in key or value
+    // allow only one key=value pair per line
+    // allow any characters in value, for example `$Canvas.course.id`
+    (field) => /^\s*$|^\s*\w+=[^=\s]+\s*$/.test(field)
+  );
+
+  if (allFieldsValid) {
+    return "";
+  } else {
+    return "Custom fields must be in key=value format and only one per line!";
+  }
+};
+
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const getParam = (p: string) => url.searchParams.get(p) as string;
+  const getBooleanParam = (p: string) =>
+    Array.from(url.searchParams.keys()).includes(p);
 
   const opts: XMLOptions = {
     title: getParam("tool_name"),
@@ -14,23 +36,42 @@ export const loader: LoaderFunction = async ({ request }) => {
     privacyLevel: getParam("privacy_level"),
     selectionHeight: getParam("selection_height"),
     selectionWidth: getParam("selection_width"),
-    oauthCompliant: Array.from(url.searchParams.keys()).includes(
-      "oauth_compliant"
-    ),
+    oauthCompliant: getBooleanParam("oauth_compliant"),
     visibility: getParam("visibility"),
+    customFields: getParam("custom_fields"),
     placements: url.searchParams.getAll("placements"),
   };
+
+  const errors: ErrorHash = {};
+  const customFieldsError = validateCustomFields(opts.customFields);
+  if (customFieldsError) {
+    errors.custom_fields = customFieldsError;
+  }
+
+  if (hasErrors(errors)) {
+    return {
+      xml: "Fix errors before regenerating",
+      errors,
+      placements: PLACEMENTS,
+    };
+  }
+
   return {
     xml: buildXML(opts),
     placements: PLACEMENTS,
+    errors: {},
   };
 };
+
+const hasErrors = (errors: ErrorHash) => Object.keys(errors).length > 0;
 
 type FieldProps = {
   name: string;
   inputName?: string;
   type?: string;
   defaultValue?: string;
+  description?: string;
+  error?: string;
   children?: React.ReactNode;
 };
 const Field = ({
@@ -38,21 +79,43 @@ const Field = ({
   inputName,
   type = "string",
   defaultValue = "",
+  description = "",
+  error = "",
   children,
 }: FieldProps) => (
   <tr>
-    <td>{name}</td>
+    <td>
+      <span>{name}</span>
+      {description && (
+        <div
+          style={{ maxWidth: "20em", paddingLeft: "1em", fontStyle: "italic" }}
+        >
+          {description}
+        </div>
+      )}
+    </td>
     <td>
       {children}
       {!children && (
         <input name={inputName} type={type} defaultValue={defaultValue}></input>
       )}
     </td>
+    <td>
+      <p style={{ color: "red" }}>{error}</p>
+    </td>
   </tr>
 );
 
+type ErrorHash = {
+  [key: string]: string;
+};
+
 export default function Index() {
-  const { xml, placements }: { xml: string; placements: Placement[] } =
+  const {
+    xml,
+    placements,
+    errors,
+  }: { xml: string; placements: Placement[]; errors: ErrorHash } =
     useLoaderData();
 
   return (
@@ -86,25 +149,42 @@ export default function Index() {
         </a>{" "}
         for information on these options)
       </p>
+      {hasErrors(errors) && (
+        <p style={{ color: "red" }}>Fix errors before regenerating</p>
+      )}
       <Form method="get">
         <table>
           <Field name="Tool Name" inputName="tool_name"></Field>
           <Field name="Description" inputName="description"></Field>
           <Field name="Tool Domain" inputName="tool_domain"></Field>
           <Field name="Launch URL" inputName="launch_url"></Field>
-          <Field name="Privacy Level" inputName="privacy_level"></Field>
+          <Field name="Privacy Level">
+            <select name="privacy_level">
+              <option value="public">public</option>
+              <option value="name_only">name_only</option>
+              <option value="anonymous">anonymous</option>
+            </select>
+          </Field>
           <Field
             name="OAuth Compliant"
             inputName="oauth_compliant"
             type="checkbox"
+            description="Does not copy launch URL query parameters to POST body when true"
           ></Field>
           <Field name="Visibility">
             <select name="visibility">
-              <option value="none">None</option>
-              <option value="public">Public</option>
-              <option value="members">Members</option>
-              <option value="admins">Admins</option>
+              <option value="none">none</option>
+              <option value="public">public</option>
+              <option value="members">members</option>
+              <option value="admins">admins</option>
             </select>
+          </Field>
+          <Field
+            name="Custom Fields"
+            description="(key=value, one per line)"
+            error={errors.custom_fields}
+          >
+            <textarea name="custom_fields" rows={3} cols={24}></textarea>
           </Field>
           <Field
             name="Selection Height"
@@ -126,10 +206,10 @@ export default function Index() {
             </select>
           </Field>
         </table>
-        <button type="submit">Create</button>
+        <button type="submit">Generate</button>
       </Form>
       <h3>Generated XML</h3>
-      <code>${xml}</code>
+      <code>{xml}</code>
     </div>
   );
 }
