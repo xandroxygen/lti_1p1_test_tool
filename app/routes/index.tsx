@@ -5,7 +5,6 @@ import { buildXML, XMLOptions } from "~/xml.server";
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const getParam = (p: string) => url.searchParams.get(p) as string;
-  console.log(url.searchParams.keys());
 
   const opts: XMLOptions = {
     title: getParam("tool_name"),
@@ -18,9 +17,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     oauthCompliant: Array.from(url.searchParams.keys()).includes(
       "oauth_compliant"
     ),
+    visibility: getParam("visibility"),
     placements: url.searchParams.getAll("placements"),
   };
-  console.log({ opts });
   return {
     xml: buildXML(opts),
     placements: PLACEMENTS,
@@ -99,6 +98,14 @@ export default function Index() {
             inputName="oauth_compliant"
             type="checkbox"
           ></Field>
+          <Field name="Visibility">
+            <select name="visibility">
+              <option value="none">None</option>
+              <option value="public">Public</option>
+              <option value="members">Members</option>
+              <option value="admins">Admins</option>
+            </select>
+          </Field>
           <Field
             name="Selection Height"
             inputName="selection_height"

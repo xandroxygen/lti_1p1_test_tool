@@ -17,6 +17,7 @@ export type XMLOptions = {
   selectionHeight?: string;
   selectionWidth?: string;
   oauthCompliant?: boolean;
+  visibility?: string;
   placements?: string[];
 };
 
@@ -103,6 +104,7 @@ export const buildXML = (opts: XMLOptions) => {
     selectionHeight,
     selectionWidth,
     oauthCompliant,
+    visibility,
   } = { ...defaults, ...opts };
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -115,6 +117,10 @@ export const buildXML = (opts: XMLOptions) => {
                 ${property("text", title)}
                 ${property("oauth_compliant", oauthCompliant)}
                 ${property("privacy_level", privacyLevel)}
+                ${property(
+                  "visibility",
+                  visibility === "none" ? false : visibility
+                )}
                 ${placements?.map((p) =>
                   placementXML(p, launchUrl, selectionWidth, selectionHeight)
                 )}
