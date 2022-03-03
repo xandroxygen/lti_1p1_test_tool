@@ -65,7 +65,7 @@ const placementXML = (
 <lticm:options name="${p}">
     ${property("enabled", "true")}
     ${property("url", `${url}?placement=${p}`)}
-    ${property("text", PLACEMENTS_BY_KEY[p].name)}
+    ${property("text", `LTI 1.1 ${PLACEMENTS_BY_KEY[p].name}`)}
     ${property("selection_width", selectionWidth)}
     ${property("selection_height", selectionHeight)}
     ${property("message_type", placementMessageType(p))}

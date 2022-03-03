@@ -50,6 +50,17 @@ export default function Index() {
     errorTracker: SerializedErrorTracker;
   } = useLoaderData();
 
+  const onCopyClick = () => {
+    navigator.clipboard.writeText(xml);
+    const copyNotice = document.getElementById("copy-notice");
+    if (copyNotice) {
+      copyNotice.style.display = "inline";
+      setTimeout(() => {
+        copyNotice.style.display = "none";
+      }, 3000);
+    }
+  };
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
       <h1>LTI 1.1 Test Tool</h1>
@@ -141,7 +152,18 @@ export default function Index() {
         <button type="submit">Generate</button>
       </Form>
       <h3>Generated XML</h3>
-      <code>{xml}</code>
+      <div>
+        <button onClick={onCopyClick}>Copy to Clipboard</button>
+        <span
+          style={{ paddingLeft: "0.5em", color: "green", display: "none" }}
+          id="copy-notice"
+        >
+          Copied to Clipboard!
+        </span>
+      </div>
+      <div>
+        <code>{xml}</code>
+      </div>
     </div>
   );
 }
