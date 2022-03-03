@@ -80,6 +80,13 @@ export default function Index() {
         see all the launch parameters.
       </p>
       <h3>Configuration</h3>
+      <p>
+        (See the{" "}
+        <a href="https://canvas.instructure.com/doc/api/file.tools_xml.html">
+          Canvas API docs
+        </a>{" "}
+        for information on these options)
+      </p>
       <Form method="get">
         <table>
           <Field name="Tool Name" inputName="tool_name"></Field>
@@ -88,7 +95,7 @@ export default function Index() {
           <Field name="Launch URL" inputName="launch_url"></Field>
           <Field name="Privacy Level" inputName="privacy_level"></Field>
           <Field
-            name="OAuth Compliant (launch URLs with query parameters will not be copied to the POST body when true)"
+            name="OAuth Compliant"
             inputName="oauth_compliant"
             type="checkbox"
           ></Field>
