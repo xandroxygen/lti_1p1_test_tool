@@ -6,6 +6,7 @@ import {
   SerializedErrorTracker,
 } from "~/xmlBuilder/errorTracker.server";
 import { Field } from "~/xmlBuilder/Field";
+import { PlacementField } from "~/xmlBuilder/Placement";
 import buildValidators from "~/xmlBuilder/validators.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -58,6 +59,14 @@ export default function Index() {
       setTimeout(() => {
         copyNotice.style.display = "none";
       }, 3000);
+    }
+  };
+
+  const onPlacementExpand = () => {
+    const placementConfig = document.getElementById("placement-config");
+    if (placementConfig) {
+      const value = placementConfig.style.display === "flex" ? "none" : "flex";
+      placementConfig.style.display = value;
     }
   };
 
@@ -141,29 +150,49 @@ export default function Index() {
             type="number"
             defaultValue="500"
           ></Field>
-          <Field name="Placements">
-            <select name="placements" multiple>
-              {placements.map((p) => (
-                <option value={p.key}>{p.name}</option>
-              ))}
-            </select>
+          <Field
+            name="Placements"
+            description="Defaults to only Course Navigation. Click button for more detailed options"
+          >
+            <button onClick={onPlacementExpand}>
+              Toggle Placement Configuration
+            </button>
           </Field>
+          <div
+            id="placement-config"
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              flexWrap: "wrap",
+              maxHeight: "50em",
+            }}
+          >
+            {placements.map((p) => (
+              <PlacementField placement={p}></PlacementField>
+            ))}
+          </div>
         </table>
-        <button type="submit">Generate</button>
+        <button style={{ marginTop: "2em" }} type="submit">
+          Generate
+        </button>
       </Form>
       <h3>Generated XML</h3>
-      <div>
-        <button onClick={onCopyClick}>Copy to Clipboard</button>
-        <span
-          style={{ paddingLeft: "0.5em", color: "green", display: "none" }}
-          id="copy-notice"
-        >
-          Copied to Clipboard!
-        </span>
-      </div>
-      <div>
-        <code>{xml}</code>
-      </div>
+      {!errorTracker.hasErrors && (
+        <div>
+          <button onClick={onCopyClick}>Copy to Clipboard</button>
+          <span
+            style={{
+              paddingLeft: "0.5em",
+              color: "green",
+              display: "none",
+            }}
+            id="copy-notice"
+          >
+            Copied to Clipboard!
+          </span>
+        </div>
+      )}
+      <code>{xml}</code>
     </div>
   );
 }
