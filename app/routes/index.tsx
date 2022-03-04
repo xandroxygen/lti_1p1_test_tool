@@ -1,4 +1,10 @@
-import { Form, LoaderFunction, useLoaderData } from "remix";
+import {
+  ActionFunction,
+  Form,
+  LoaderFunction,
+  useActionData,
+  useLoaderData,
+} from "remix";
 import { PLACEMENTS, Placement } from "~/placements.server";
 import { buildXML, XMLOptions } from "~/xml.server";
 import {
@@ -6,14 +12,19 @@ import {
   SerializedErrorTracker,
 } from "~/xmlBuilder/errorTracker.server";
 import { Field } from "~/xmlBuilder/Field";
-import { PlacementField } from "~/xmlBuilder/Placement";
+import {
+  Header,
+  PlacementsList,
+  Visibility,
+  XMLDisplay,
+} from "~/xmlBuilder/misc";
+import { PlacementField } from "~/xmlBuilder/PlacementField";
 import buildValidators from "~/xmlBuilder/validators.server";
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const url = new URL(request.url);
-  const getParam = (p: string) => url.searchParams.get(p) as string;
-  const getBooleanParam = (p: string) =>
-    Array.from(url.searchParams.keys()).includes(p);
+export const action: ActionFunction = async ({ request }) => {
+  const body = await request.formData();
+  const getParam = (p: string) => body.get(p) as string;
+  const getBooleanParam = (p: string) => Array.from(body.keys()).includes(p);
 
   const opts: XMLOptions = {
     title: getParam("tool_name"),
@@ -26,7 +37,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     oauthCompliant: getBooleanParam("oauth_compliant"),
     visibility: getParam("visibility"),
     customFields: getParam("custom_fields"),
-    placements: url.searchParams.getAll("placements"),
+    placements: body.getAll("placements") as string[], // TODO change this bc placement data is now much more complex
   };
 
   const errorTracker = buildErrorTracker();
@@ -40,59 +51,27 @@ export const loader: LoaderFunction = async ({ request }) => {
   };
 };
 
+/**
+ * Loader is only called on initial page load and so only
+ * needs to supply empty data
+ */
+export const loader: LoaderFunction = () => {
+  return {
+    xml: buildXML({} as XMLOptions),
+    errorTracker: buildErrorTracker().toJSON(),
+    placements: PLACEMENTS,
+  };
+};
+
 export default function Index() {
-  const {
-    xml,
-    placements,
-    errorTracker,
-  }: {
-    xml: string;
-    placements: Placement[];
-    errorTracker: SerializedErrorTracker;
-  } = useLoaderData();
-
-  const onCopyClick = () => {
-    navigator.clipboard.writeText(xml);
-    const copyNotice = document.getElementById("copy-notice");
-    if (copyNotice) {
-      copyNotice.style.display = "inline";
-      setTimeout(() => {
-        copyNotice.style.display = "none";
-      }, 3000);
-    }
-  };
-
-  const onPlacementExpand = () => {
-    const placementConfig = document.getElementById("placement-config");
-    if (placementConfig) {
-      const value = placementConfig.style.display === "flex" ? "none" : "flex";
-      placementConfig.style.display = value;
-    }
-  };
+  const data = useActionData() || useLoaderData();
+  const xml: string = data?.xml;
+  const placements: Placement[] = data?.placements;
+  const errorTracker: SerializedErrorTracker = data?.errorTracker;
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>LTI 1.1 Test Tool</h1>
-      <h3>Usage</h3>
-      <p>
-        Fill out the fields below to your heart's content to configure your
-        tool. Fields left blank will use sane defaults.
-      </p>
-      <p>
-        Course Navigation is the only default placement, so add more if you want
-        them. Once you're ready, copy the XML from the bottom of the page.
-      </p>
-      <p>
-        In a Canvas course or account, navigate to Settings -&gt; Apps -&gt; +
-        App -&gt; Paste XML. Give the tool a name (I prefer LTI 1.1 Test Tool)
-        and put `key` for the Consumer Key and `secret` for the Shared Secret,
-        and paste the XML in the XML box.
-      </p>
-      <p>
-        Save the tool and then reload the page. `LTI 1.1 Test Tool` should be a
-        new option in the course nav sidebar. Launch it and you will be able to
-        see all the launch parameters.
-      </p>
+      <Header></Header>
       <h3>Configuration</h3>
       <p>
         (See the{" "}
@@ -104,7 +83,7 @@ export default function Index() {
       {errorTracker.hasErrors && (
         <p style={{ color: "red" }}>{errorTracker.text}</p>
       )}
-      <Form method="get">
+      <Form method="post">
         <table>
           <Field name="Tool Name" inputName="tool_name"></Field>
           <Field name="Description" inputName="description"></Field>
@@ -123,14 +102,7 @@ export default function Index() {
             type="checkbox"
             description="Does not copy launch URL query parameters to POST body when true"
           ></Field>
-          <Field name="Visibility">
-            <select name="visibility">
-              <option value="none">none</option>
-              <option value="public">public</option>
-              <option value="members">members</option>
-              <option value="admins">admins</option>
-            </select>
-          </Field>
+          <Visibility name="visibility"></Visibility>
           <Field
             name="Custom Fields"
             description="(key=value, one per line)"
@@ -150,49 +122,20 @@ export default function Index() {
             type="number"
             defaultValue="500"
           ></Field>
-          <Field
-            name="Placements"
-            description="Defaults to only Course Navigation. Click button for more detailed options"
-          >
-            <button onClick={onPlacementExpand}>
-              Toggle Placement Configuration
-            </button>
-          </Field>
-          <div
-            id="placement-config"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flexWrap: "wrap",
-              maxHeight: "50em",
-            }}
-          >
+          <PlacementsList>
             {placements.map((p) => (
-              <PlacementField placement={p}></PlacementField>
+              <PlacementField
+                placement={p}
+                active={p.key === "course_navigation"} // TODO move this to loader only
+              ></PlacementField>
             ))}
-          </div>
+          </PlacementsList>
         </table>
         <button style={{ marginTop: "2em" }} type="submit">
           Generate
         </button>
       </Form>
-      <h3>Generated XML</h3>
-      {!errorTracker.hasErrors && (
-        <div>
-          <button onClick={onCopyClick}>Copy to Clipboard</button>
-          <span
-            style={{
-              paddingLeft: "0.5em",
-              color: "green",
-              display: "none",
-            }}
-            id="copy-notice"
-          >
-            Copied to Clipboard!
-          </span>
-        </div>
-      )}
-      <code>{xml}</code>
+      <XMLDisplay xml={xml} error={errorTracker.hasErrors}></XMLDisplay>
     </div>
   );
 }
