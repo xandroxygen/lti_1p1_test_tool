@@ -19,7 +19,13 @@ export type XMLOptions = {
   oauthCompliant?: boolean;
   visibility?: string;
   customFields?: string;
-  placements?: string[];
+  placements?: PlacementOptions[];
+};
+
+export type PlacementOptions = {
+  key: string;
+  messageType: string;
+  visibility?: string;
 };
 
 const defaults: XMLOptions = {
@@ -28,7 +34,7 @@ const defaults: XMLOptions = {
   domain: config.DOMAIN,
   launchUrl: config.LAUNCH_URL,
   privacyLevel: "public",
-  placements: ["course_navigation"],
+  placements: [{ key: "course_navigation", messageType: BASIC_LTI_REQUEST }],
 };
 
 const property = (name: string, value?: string | boolean) => {
@@ -39,36 +45,20 @@ const property = (name: string, value?: string | boolean) => {
   return `<lticm:property name="${name}">${value}</lticm:property>`;
 };
 
-const placementMessageType = (p: string) => {
-  const placement = PLACEMENTS_BY_KEY[p];
-  if (!placement.types) {
-    return BASIC_LTI_REQUEST;
-  }
-
-  if (placement.types.includes(CONTENT_ITEM_SELECTION_REQUEST)) {
-    return CONTENT_ITEM_SELECTION_REQUEST;
-  }
-
-  if (placement.types.includes(CONTENT_ITEM_SELECTION)) {
-    return CONTENT_ITEM_SELECTION;
-  }
-
-  return BASIC_LTI_REQUEST;
-};
-
 const placementXML = (
-  p: string,
+  p: PlacementOptions,
   url: string,
   selectionWidth?: string,
   selectionHeight?: string
 ) => `
-<lticm:options name="${p}">
+<lticm:options name="${p.key}">
     ${property("enabled", "true")}
-    ${property("url", `${url}?placement=${p}`)}
-    ${property("text", `LTI 1.1 ${PLACEMENTS_BY_KEY[p].name}`)}
+    ${property("url", `${url}?placement=${p.key}`)}
+    ${property("text", `LTI 1.1 ${PLACEMENTS_BY_KEY[p.key].name}`)}
     ${property("selection_width", selectionWidth)}
     ${property("selection_height", selectionHeight)}
-    ${property("message_type", placementMessageType(p))}
+    ${property("message_type", p.messageType)}
+    ${property("visibility", p.visibility)}
 </lticm:options>
 `;
 

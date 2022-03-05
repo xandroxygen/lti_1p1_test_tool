@@ -6,7 +6,7 @@ import {
   useLoaderData,
 } from "remix";
 import { PLACEMENTS, Placement } from "~/placements.server";
-import { buildXML, XMLOptions } from "~/xml.server";
+import { buildXML, PlacementOptions, XMLOptions } from "~/xml.server";
 import {
   buildErrorTracker,
   SerializedErrorTracker,
@@ -25,6 +25,16 @@ export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const getParam = (p: string) => body.get(p) as string;
   const getBooleanParam = (p: string) => Array.from(body.keys()).includes(p);
+  const getPlacementParam = (placement: string, p: string) =>
+    body.get(`${placement}[${p}]`) as string;
+
+  const placementOptions: PlacementOptions[] = PLACEMENTS.filter(
+    (p) => getPlacementParam(p.key, "included") === "on"
+  ).map((p) => ({
+    key: p.key,
+    messageType: getPlacementParam(p.key, "message_type"),
+    visibility: getPlacementParam(p.key, "visibility"),
+  }));
 
   const opts: XMLOptions = {
     title: getParam("tool_name"),
@@ -37,7 +47,7 @@ export const action: ActionFunction = async ({ request }) => {
     oauthCompliant: getBooleanParam("oauth_compliant"),
     visibility: getParam("visibility"),
     customFields: getParam("custom_fields"),
-    placements: body.getAll("placements") as string[], // TODO change this bc placement data is now much more complex
+    placements: placementOptions,
   };
 
   const errorTracker = buildErrorTracker();
