@@ -1,10 +1,5 @@
 import getConfig from "./config.server";
-import {
-  BASIC_LTI_REQUEST,
-  CONTENT_ITEM_SELECTION,
-  CONTENT_ITEM_SELECTION_REQUEST,
-  PLACEMENTS_BY_KEY,
-} from "./placements.server";
+import { BASIC_LTI_REQUEST, PLACEMENTS_BY_KEY } from "./placements.server";
 
 const config = getConfig();
 
@@ -50,17 +45,23 @@ const placementXML = (
   url: string,
   selectionWidth?: string,
   selectionHeight?: string
-) => `
-<lticm:options name="${p.key}">
-    ${property("enabled", "true")}
-    ${property("url", `${url}?placement=${p.key}`)}
-    ${property("text", `LTI 1.1 ${PLACEMENTS_BY_KEY[p.key].name}`)}
-    ${property("selection_width", selectionWidth)}
-    ${property("selection_height", selectionHeight)}
-    ${property("message_type", p.messageType)}
-    ${property("visibility", p.visibility)}
-</lticm:options>
-`;
+) => {
+  const launchUrl = `${
+    p.messageType === BASIC_LTI_REQUEST ? url : config.CONTENT_ITEM_LAUNCH_URL
+  }?placement=${p.key}`;
+
+  return `
+  <lticm:options name="${p.key}">
+      ${property("enabled", "true")}
+      ${property("url", launchUrl)}
+      ${property("text", `LTI 1.1 ${PLACEMENTS_BY_KEY[p.key].name}`)}
+      ${property("selection_width", selectionWidth)}
+      ${property("selection_height", selectionHeight)}
+      ${property("message_type", p.messageType)}
+      ${property("visibility", p.visibility)}
+  </lticm:options>
+  `;
+};
 
 const customFieldXML = (fields: string) => `
   <lticm:options name="custom_fields">
