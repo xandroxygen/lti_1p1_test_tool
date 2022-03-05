@@ -19,7 +19,11 @@ export const PlacementField = ({
         <b>{placement.name}</b>
       </Field>
       <Field name="Included">
-        <input name={subProp("included")} type="checkbox"></input>
+        <input
+          name={subProp("included")}
+          type="checkbox"
+          defaultChecked={active}
+        ></input>
       </Field>
       <Field name="Message Type">
         <select name={subProp("message_type")}>
