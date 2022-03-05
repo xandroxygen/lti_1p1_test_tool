@@ -9,11 +9,15 @@ export type Placement = {
 };
 
 export const PLACEMENTS: Placement[] = [
-  { key: "account_navigation", name: "Account Navigation" },
+  {
+    key: "account_navigation",
+    name: "Account Navigation",
+    types: [BASIC_LTI_REQUEST],
+  },
   {
     key: "assignment_menu",
     name: "Assignment Menu",
-    types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
   {
     key: "assignment_selection",
@@ -28,18 +32,27 @@ export const PLACEMENTS: Placement[] = [
   {
     key: "course_assignments_menu",
     name: "Course Assignments Menu",
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
+  },
+  {
+    key: "course_home_sub_navigation",
+    name: "Course Home Sub Navigation",
     types: [BASIC_LTI_REQUEST],
   },
-  { key: "course_home_sub_navigation", name: "Course Home Sub Navigation" },
-  { key: "course_navigation", name: "Course Navigation" },
+  {
+    key: "course_navigation",
+    name: "Course Navigation",
+    types: [BASIC_LTI_REQUEST],
+  },
   {
     key: "course_settings_sub_navigation",
     name: "Course Settings Sub Navigation",
+    types: [BASIC_LTI_REQUEST],
   },
   {
     key: "discussion_topic_menu",
     name: "Discussion Menu",
-    types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
   {
     key: "editor_button",
@@ -49,9 +62,13 @@ export const PLACEMENTS: Placement[] = [
   {
     key: "file_menu",
     name: "File Menu",
-    types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
-  { key: "global_navigation", name: "Global Navigation" },
+  {
+    key: "global_navigation",
+    name: "Global Navigation",
+    types: [BASIC_LTI_REQUEST],
+  },
   {
     key: "homework_submission",
     name: "Homework Submission",
@@ -70,13 +87,13 @@ export const PLACEMENTS: Placement[] = [
   {
     key: "module_menu",
     name: "Module Menu",
-    types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
-  { key: "post_grades", name: "Post Grades" },
+  { key: "post_grades", name: "Post Grades", types: [BASIC_LTI_REQUEST] },
   {
     key: "quiz_menu",
     name: "Quiz Menu",
-    types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
   {
     key: "similarity_detection",
@@ -88,12 +105,20 @@ export const PLACEMENTS: Placement[] = [
     name: "Submission Type Selection",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
-  { key: "tool_configuration", name: "Tool Configuration" },
-  { key: "user_navigation", name: "User Navigation" },
+  {
+    key: "tool_configuration",
+    name: "Tool Configuration",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
+    key: "user_navigation",
+    name: "User Navigation",
+    types: [BASIC_LTI_REQUEST],
+  },
   {
     key: "wiki_page_menu",
     name: "Wiki Page Menu",
-    types: [CONTENT_ITEM_SELECTION, BASIC_LTI_REQUEST],
+    types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
 ];
 
