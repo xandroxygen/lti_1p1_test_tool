@@ -46,14 +46,10 @@ const placementXML = (
   selectionWidth?: string,
   selectionHeight?: string
 ) => {
-  const launchUrl = `${
-    p.messageType === BASIC_LTI_REQUEST ? url : config.CONTENT_ITEM_LAUNCH_URL
-  }?placement=${p.key}`;
-
   return `
   <lticm:options name="${p.key}">
       ${property("enabled", "true")}
-      ${property("url", launchUrl)}
+      ${property("url", `${url}?placement=${p.key}`)}
       ${property("text", `LTI 1.1 ${PLACEMENTS_BY_KEY[p.key].name}`)}
       ${property("selection_width", selectionWidth)}
       ${property("selection_height", selectionHeight)}
