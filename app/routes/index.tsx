@@ -21,6 +21,12 @@ import {
 import { PlacementField } from "~/xmlBuilder/PlacementField";
 import buildValidators from "~/xmlBuilder/validators.server";
 
+type IndexData = {
+  xml: string;
+  errorTracker: SerializedErrorTracker;
+  placements: Placement[];
+};
+
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const getParam = (p: string) => body.get(p) as string;
@@ -58,7 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
     xml: errorTracker.hasErrors() ? errorTracker.text : buildXML(opts),
     errorTracker: errorTracker.toJSON(),
     placements: PLACEMENTS,
-  };
+  } as IndexData;
 };
 
 /**
@@ -70,14 +76,14 @@ export const loader: LoaderFunction = () => {
     xml: buildXML({} as XMLOptions),
     errorTracker: buildErrorTracker().toJSON(),
     placements: PLACEMENTS,
-  };
+  } as IndexData;
 };
 
 export default function Index() {
-  const data = useActionData() || useLoaderData();
-  const xml: string = data?.xml;
-  const placements: Placement[] = data?.placements;
-  const errorTracker: SerializedErrorTracker = data?.errorTracker;
+  const data: IndexData = useActionData() || useLoaderData();
+  const xml = data?.xml;
+  const placements = data?.placements;
+  const errorTracker = data?.errorTracker;
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
