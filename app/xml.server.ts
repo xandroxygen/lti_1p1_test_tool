@@ -123,9 +123,11 @@ export const buildXML = (opts: XMLOptions) => {
                   visibility === "none" ? false : visibility
                 )}
                 ${customFields ? customFieldXML(customFields) : ""}
-                ${placements?.map((p) =>
-                  placementXML(p, launchUrl, selectionWidth, selectionHeight)
-                )}
+                ${placements
+                  ?.map((p) =>
+                    placementXML(p, launchUrl, selectionWidth, selectionHeight)
+                  )
+                  .join("\n")}
             </blti:extensions>
         </cartridge_basiclti_link>
     </xml>`;
