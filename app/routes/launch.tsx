@@ -1,23 +1,26 @@
-import { LoaderFunction, useLoaderData } from "remix";
-import { retrieveLaunch } from "~/localStorage.server";
+import { ActionFunction, useActionData } from "remix";
 import { getType, LtiLaunchParams } from "~/ltiLaunchParams";
 import { CONTENT_ITEM_SELECTION_REQUEST } from "~/placements.server";
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+  const launchData = Object.fromEntries(formData) as LtiLaunchParams;
   return {
-    launchData: retrieveLaunch(params.launchId || ""),
+    launchData,
   };
 };
 
-export default function Launch() {
-  const { launchData }: { launchData: LtiLaunchParams } = useLoaderData();
-  const isContentItemRequest =
-    launchData.lti_message_type === CONTENT_ITEM_SELECTION_REQUEST;
+export default function Index() {
+  const data = useActionData();
+  const launchData: LtiLaunchParams = data?.launchData;
 
   let error;
   if (!launchData) {
     error = "Launch corrupted, reload the page";
   }
+
+  const isContentItemRequest =
+    launchData.lti_message_type === CONTENT_ITEM_SELECTION_REQUEST;
 
   const displayParams = Object.entries(launchData || {}).map(
     ([key, value]) => ({
