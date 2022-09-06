@@ -1,6 +1,5 @@
 export const BASIC_LTI_REQUEST = "basic_lti_request";
-export const CONTENT_ITEM_SELECTION = "content_item_selection";
-export const CONTENT_ITEM_SELECTION_REQUEST = "content_item_selection_request";
+export const CONTENT_ITEM_SELECTION_REQUEST = "ContentItemSelectionRequest";
 
 export type Placement = {
   key: string;
