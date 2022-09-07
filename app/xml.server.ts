@@ -55,6 +55,7 @@ const placementXML = (
       ${property("selection_height", selectionHeight)}
       ${property("message_type", p.messageType)}
       ${property("visibility", p.visibility)}
+      ${property("canvas_icon_class", p.key == "editor_button" && "icon_lti")}
   </lticm:options>
   `;
 };
