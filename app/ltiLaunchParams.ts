@@ -39,6 +39,16 @@ export type LtiLaunchParams = {
   launch_presentation_css_url?: string;
   tool_consumer_instance_description?: string;
   tool_consumer_instance_url?: string;
+  placement?: string;
+  data?: string;
+  // Optional params present in ContentItemSelectionRequest
+  content_item_return_url?: string;
+  accept_media_types?: string;
+  accept_multiple?: string;
+  accept_presentation_document_targets?: string;
+  accept_unsigned?: string;
+  auto_create?: string;
+  ext_lti_assignment_id?: string;
 };
 
 export const REQUIRED_PARAMS = [

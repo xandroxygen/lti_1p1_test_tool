@@ -1,4 +1,5 @@
 export const BASIC_LTI_REQUEST = "basic_lti_request";
+export const CONTENT_ITEM_SELECTION = "ContentItemSelection";
 export const CONTENT_ITEM_SELECTION_REQUEST = "ContentItemSelectionRequest";
 
 export type Placement = {
