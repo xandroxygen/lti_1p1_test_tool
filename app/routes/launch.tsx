@@ -81,7 +81,7 @@ export default function Launch() {
           <h3 style={{ color: "blue" }}>Content Item Selection</h3>
           <form action={launchData.content_item_return_url} method="post">
             {Object.entries(contentItemResponse).map(([k, v]) => (
-              <input type="hidden" name={k} value={v} />
+              <input key={k} type="hidden" name={k} value={v} />
             ))}
             <button type="submit">Return Content Item to Canvas</button>
           </form>
