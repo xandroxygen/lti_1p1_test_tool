@@ -72,7 +72,7 @@ export const PlacementsList = ({ children }: { children: React.ReactNode }) => {
           display: "none",
           flexDirection: "column",
           flexWrap: "wrap",
-          maxHeight: "60em",
+          maxHeight: "100em",
         }}
       >
         {children}
