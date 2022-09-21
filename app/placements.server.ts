@@ -15,9 +15,24 @@ export const PLACEMENTS: Placement[] = [
     types: [BASIC_LTI_REQUEST],
   },
   {
+    key: "assignment_edit",
+    name: "Assignment Edit",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
     key: "assignment_menu",
     name: "Assignment Menu",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
+  },
+  {
+    key: "assignment_index_menu",
+    name: "Assignment Index Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
+    key: "assignment_group_menu",
+    name: "Assignment Group Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
   },
   {
     key: "assignment_selection",
@@ -25,9 +40,19 @@ export const PLACEMENTS: Placement[] = [
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
   {
+    key: "assignment_view",
+    name: "Assignment View",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
     key: "collaboration",
     name: "Collaboration",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
+  },
+  {
+    key: "conference_selection",
+    name: "Conference Selection",
+    types: [BASIC_LTI_REQUEST],
   },
   {
     key: "course_assignments_menu",
@@ -55,6 +80,11 @@ export const PLACEMENTS: Placement[] = [
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
   {
+    key: "discussion_topic_index_menu",
+    name: "Discussion Topic Index Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
     key: "editor_button",
     name: "Editor Button",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
@@ -63,6 +93,11 @@ export const PLACEMENTS: Placement[] = [
     key: "file_menu",
     name: "File Menu",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
+  },
+  {
+    key: "file_index_menu",
+    name: "File Index Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
   },
   {
     key: "global_navigation",
@@ -89,11 +124,36 @@ export const PLACEMENTS: Placement[] = [
     name: "Module Menu",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
+  {
+    key: "module_index_menu",
+    name: "Module Index Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
+    key: "module_group_menu",
+    name: "Module Group Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
+    key: "module_index_menu_modal",
+    name: "Module Index Menu (Modal)",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
+    key: "module_menu_modal",
+    name: "Module Menu (Modal)",
+    types: [BASIC_LTI_REQUEST],
+  },
   { key: "post_grades", name: "Post Grades", types: [BASIC_LTI_REQUEST] },
   {
     key: "quiz_menu",
     name: "Quiz Menu",
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
+  },
+  {
+    key: "quiz_index_menu",
+    name: "Quiz Index Menu (Commons Favorites)",
+    types: [BASIC_LTI_REQUEST],
   },
   {
     key: "similarity_detection",
@@ -106,6 +166,11 @@ export const PLACEMENTS: Placement[] = [
     types: [CONTENT_ITEM_SELECTION_REQUEST, BASIC_LTI_REQUEST],
   },
   {
+    key: "student_context_card",
+    name: "Student Context Card",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
     key: "tool_configuration",
     name: "Tool Configuration",
     types: [BASIC_LTI_REQUEST],
@@ -113,6 +178,11 @@ export const PLACEMENTS: Placement[] = [
   {
     key: "user_navigation",
     name: "User Navigation",
+    types: [BASIC_LTI_REQUEST],
+  },
+  {
+    key: "wiki_index_menu",
+    name: "Wiki Index Menu (Commons Favorites)",
     types: [BASIC_LTI_REQUEST],
   },
   {
