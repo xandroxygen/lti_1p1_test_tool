@@ -13,6 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
   return {
     launchData,
     contentItemUrl: `${config.LAUNCH_URL}?content_item`,
+    fileContentItemUrl: config.LAUNCH_URL.replace("launch", "image.png"),
     messageTypes: {
       CONTENT_ITEM_SELECTION_REQUEST,
       CONTENT_ITEM_SELECTION,
@@ -26,6 +27,7 @@ export default function Launch() {
   const { CONTENT_ITEM_SELECTION_REQUEST, CONTENT_ITEM_SELECTION } =
     data?.messageTypes || {};
   const contentItemUrl: string = data?.contentItemUrl;
+  const fileContentItemUrl: string = data?.fileContentItemUrl;
 
   if (!launchData) {
     return (
@@ -47,7 +49,22 @@ export default function Launch() {
     })
   );
 
-  const contentItemResponse = {
+  const contentItems = {
+    LtiLinkItem: {
+      "@type": "LtiLinkItem",
+      title: "1.1 test content item",
+      url: contentItemUrl,
+      mediaType: "application/vnd.ims.lti.v1.ltilink",
+    },
+    FileItem: {
+      "@type": "FileItem",
+      title: "1.1 test file content item",
+      url: fileContentItemUrl,
+      mediaType: "image/png",
+    },
+  };
+
+  const contentItemResponse = (type: keyof typeof contentItems) => ({
     lti_message_type: CONTENT_ITEM_SELECTION,
     lti_version: launchData.lti_version,
     oauth_version: launchData.oauth_version,
@@ -61,17 +78,10 @@ export default function Launch() {
     content_items: encodeURIComponent(
       JSON.stringify({
         "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
-        "@graph": [
-          {
-            "@type": "LtiLinkItem",
-            title: "1.1 test content item",
-            url: contentItemUrl,
-            mediaType: "application/vnd.ims.lti.v1.ltilink",
-          },
-        ],
+        "@graph": [contentItems[type]],
       })
     ),
-  };
+  });
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif" }}>
@@ -80,10 +90,18 @@ export default function Launch() {
         <div>
           <h3 style={{ color: "blue" }}>Content Item Selection</h3>
           <form action={launchData.content_item_return_url} method="post">
-            {Object.entries(contentItemResponse).map(([k, v]) => (
+            {Object.entries(contentItemResponse("LtiLinkItem")).map(
+              ([k, v]) => (
+                <input key={k} type="hidden" name={k} value={v} />
+              )
+            )}
+            <button type="submit">Return Link Content Item to Canvas</button>
+          </form>
+          <form action={launchData.content_item_return_url} method="post">
+            {Object.entries(contentItemResponse("FileItem")).map(([k, v]) => (
               <input key={k} type="hidden" name={k} value={v} />
             ))}
-            <button type="submit">Return Content Item to Canvas</button>
+            <button type="submit">Return File Content Item to Canvas</button>
           </form>
         </div>
       )}
