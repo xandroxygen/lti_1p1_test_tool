@@ -48,15 +48,3 @@ export default function Launch() {
     </div>
   );
 }
-
-export const ErrorBoundary = ({ error }: { error: Error }) => {
-  return (
-    <div style={{ fontFamily: "system-ui, sans-serif" }}>
-      <h1>LTI 1.3 Launch</h1>
-      <h2 style={{ color: "red" }}>Error</h2>
-      {error.message.includes("state") && (
-        <p>State does not match; do you have cookies disabled?</p>
-      )}
-    </div>
-  );
-};
