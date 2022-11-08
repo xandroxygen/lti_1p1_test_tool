@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { ActionFunction, useActionData } from "remix";
+import { ActionFunction, json, useActionData } from "remix";
 import invariant from "tiny-invariant";
 import config from "~/config.server";
 import { v4 as uuid } from "uuid";
+import { stateCookie } from "~/cookies";
 
 type OIDCAuthRequest = {
   url: string;
@@ -48,7 +49,7 @@ const requestData = (
 
 export const action: ActionFunction = async ({
   request,
-}): Promise<OIDCAuthRequest> => {
+}): Promise<Response> => {
   const body = await request.formData();
   const params = Object.fromEntries(body) as LoginParams;
   invariant(params.client_id, "expected client_id");
@@ -58,18 +59,24 @@ export const action: ActionFunction = async ({
   const env = config();
   const state = uuid();
   const nonce = uuid();
-  // todo: store state and nonce for later verification
 
-  return {
-    url: env.OIDC_AUTH_REQUEST_URL,
-    params: requestData(
-      params,
-      params.client_id,
-      env.LAUNCH_URL_1_3,
-      state,
-      nonce
-    ),
-  };
+  return json(
+    {
+      url: env.OIDC_AUTH_REQUEST_URL,
+      params: requestData(
+        params,
+        params.client_id,
+        env.LAUNCH_URL_1_3,
+        state,
+        nonce
+      ),
+    },
+    {
+      headers: {
+        "Set-Cookie": await stateCookie.serialize(state),
+      },
+    }
+  );
 };
 
 export default function Login() {

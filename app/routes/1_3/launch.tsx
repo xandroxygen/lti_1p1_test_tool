@@ -1,5 +1,6 @@
 import { ActionFunction, useActionData } from "remix";
 import invariant from "tiny-invariant";
+import { stateCookie } from "~/cookies";
 import { verify } from "~/jwt.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -9,7 +10,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   const launchData = await verify(idToken);
 
-  // todo: verify state here
+  const cookieHeader = request.headers.get("Cookie");
+  const stateFromCookie = await stateCookie.parse(cookieHeader);
+  const stateFromLaunch = formData.get("state")?.toString();
+  invariant(
+    stateFromCookie === stateFromLaunch,
+    "state does not match; do you have cookies disabled?"
+  );
+
   return {
     launchData,
   };
