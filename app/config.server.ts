@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default function config() {
-  const DOMAIN = process.env.LTI_DOMAIN;
+  const DOMAIN = process.env.LTI_DOMAIN || "";
   const prefix = process.env.NODE_ENV === "production" ? "https://" : "http://";
   const baseUrl = `${prefix}${DOMAIN}`;
   const LAUNCH_URL = `${baseUrl}/launch`;

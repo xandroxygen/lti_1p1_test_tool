@@ -91,7 +91,8 @@ export const Header = () => (
     </p>
     <p>
       Course Navigation is the only default placement, so add more if you want
-      them. Once you're ready, copy the XML from the bottom of the page.
+      them. Once you're ready, click Generate and copy the XML from the bottom
+      of the page.
     </p>
     <p>
       In a Canvas course or account, navigate to Settings -&gt; Apps -&gt; + App

@@ -35,6 +35,15 @@ This starts your app in development mode, rebuilding assets on file changes.
 Note that your tool url and domain will now be `localhost:3000` instead of the
 deployed url and domain.
 
+## Configuring with Canvas
+
+For LTI 1.1: navigate to this tool's home page (usually `http://localhost:3000`),
+and follow the configuration and installations there.
+
+For LTI 1.3: This tool currently can only work with one `client_id` and one
+Platform at a time. These details are configured in the `.env` file. Restart
+the dev server after making any changes to this file.
+
 ## Deployment
 
 This tool is deployed with Vercel and is connected to the github repo. If you
