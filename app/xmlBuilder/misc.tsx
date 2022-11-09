@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "remix";
 import { Field } from "./Field";
 
 export const Visibility = ({ name }: { name: string }) => (
@@ -84,6 +85,7 @@ export const PlacementsList = ({ children }: { children: React.ReactNode }) => {
 export const Header = () => (
   <>
     <h1>LTI 1.1 Test Tool</h1>
+    <Link to="/1_3">Check out 1.3 Configuration</Link>
     <h3>Usage</h3>
     <p>
       Fill out the fields below to your heart's content to configure your tool.
