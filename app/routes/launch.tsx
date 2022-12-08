@@ -83,9 +83,24 @@ export default function Launch() {
     ),
   });
 
+  const launchPresentationRedirect = () => {
+    const redirect = () => {
+      if (launchData.launch_presentation_return_url) {
+        window.location.href = launchData.launch_presentation_return_url;
+      }
+    };
+
+    return (
+      <button type="submit" onClick={redirect}>
+        Redirect to Launch Presentation Return Url
+      </button>
+    );
+  };
+
   return (
     <div style={{ fontFamily: "system-ui, sans-serif" }}>
       <h1>LTI 1.1 Launch</h1>
+      {launchPresentationRedirect()}
       {isContentItemRequest && (
         <div>
           <h3 style={{ color: "blue" }}>Content Item Selection</h3>
