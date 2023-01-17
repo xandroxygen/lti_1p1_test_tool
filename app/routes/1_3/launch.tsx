@@ -6,6 +6,7 @@ import { verify } from "~/jwt.server";
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const idToken = formData.get("id_token")?.toString();
+  const ltiStorageTarget = formData.get("lti_storage_target")?.toString();
   invariant(idToken, "expected id_token");
 
   const launchData = await verify(idToken);
@@ -20,12 +21,14 @@ export const action: ActionFunction = async ({ request }) => {
 
   return {
     launchData,
+    ltiStorageTarget,
   };
 };
 
 export default function Launch() {
   const data = useActionData();
   const launchData = data?.launchData;
+  const ltiStorageTarget = data?.ltiStorageTarget || "Not Present";
 
   if (!launchData) {
     return (
@@ -39,6 +42,11 @@ export default function Launch() {
   return (
     <div style={{ fontFamily: "system-ui, sans-serif" }}>
       <h1>LTI 1.3 Launch</h1>
+      <div>
+        <span>
+          <strong>LTI Storage Target:</strong> {ltiStorageTarget}
+        </span>
+      </div>
       <textarea
         readOnly
         rows={50}
