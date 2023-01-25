@@ -52,7 +52,7 @@ export default function Launch() {
   const contentItems = {
     LtiLinkItem: {
       "@type": "LtiLinkItem",
-      // title: "1.1 test content item",
+      title: "1.1 test content item",
       url: contentItemUrl,
       mediaType: "application/vnd.ims.lti.v1.ltilink",
     },
