@@ -1,24 +1,10 @@
-import {
-  ActionFunction,
-  Form,
-  LoaderFunction,
-  useActionData,
-  useLoaderData,
-} from "remix";
-import { PLACEMENTS, Placement } from "~/placements.server";
-import { buildXML, PlacementOptions, XMLOptions } from "~/xml.server";
-import {
-  buildErrorTracker,
-  SerializedErrorTracker,
-} from "~/xmlBuilder/errorTracker.server";
-import { Field } from "~/xmlBuilder/Field";
-import {
-  Header,
-  PlacementsList,
-  Visibility,
-  XMLDisplay,
-} from "~/xmlBuilder/misc";
-import { PlacementField } from "~/xmlBuilder/PlacementField";
+import {ActionFunction, Form, LoaderFunction, useActionData, useLoaderData} from "remix";
+import {Placement, PLACEMENTS} from "~/placements.server";
+import {buildXML, PlacementOptions, XMLOptions} from "~/xml.server";
+import {buildErrorTracker, SerializedErrorTracker} from "~/xmlBuilder/errorTracker.server";
+import {Field} from "~/xmlBuilder/Field";
+import {Header, PlacementsList, Visibility, XMLDisplay} from "~/xmlBuilder/misc";
+import {PlacementField} from "~/xmlBuilder/PlacementField";
 import buildValidators from "~/xmlBuilder/validators.server";
 
 type IndexData = {
@@ -141,6 +127,7 @@ export default function Index() {
           <PlacementsList>
             {placements.map((p) => (
               <PlacementField
+                key={p.key}
                 placement={p}
                 active={p.key === "course_navigation"} // TODO move this to loader only
               ></PlacementField>

@@ -1,9 +1,6 @@
-import { ActionFunction, useActionData } from "remix";
-import { getType, LtiLaunchParams } from "~/ltiLaunchParams";
-import {
-  CONTENT_ITEM_SELECTION_REQUEST,
-  CONTENT_ITEM_SELECTION,
-} from "~/placements.server";
+import {ActionFunction, useActionData} from "remix";
+import {getType, LtiLaunchParams} from "~/ltiLaunchParams";
+import {CONTENT_ITEM_SELECTION, CONTENT_ITEM_SELECTION_REQUEST} from "~/placements.server";
 import getConfig from "~/config.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -49,22 +46,33 @@ export default function Launch() {
     })
   );
 
-  const contentItems = {
-    LtiLinkItem: {
+  const contentItems = [
+    {
       "@type": "LtiLinkItem",
-      title: "1.1 test content item",
+      title: "1.1 test link item (link)",
       url: contentItemUrl,
       mediaType: "application/vnd.ims.lti.v1.ltilink",
     },
-    FileItem: {
+
+    {
+      "@type": "LtiLinkItem",
+      title: "1.1 test link item (iframe)",
+      url: contentItemUrl,
+      mediaType: "application/vnd.ims.lti.v1.ltilink",
+      placementAdvice: {
+        presentationDocumentTarget: 'iframe'
+      }
+    },
+
+    {
       "@type": "FileItem",
       title: "1.1 test file content item",
       url: fileContentItemUrl,
       mediaType: "image/png",
     },
-  };
+  ];
 
-  const contentItemResponse = (type: keyof typeof contentItems) => ({
+  const contentItemResponse = (contentItem: typeof contentItems[number]) => ({
     lti_message_type: CONTENT_ITEM_SELECTION,
     lti_version: launchData.lti_version,
     oauth_version: launchData.oauth_version,
@@ -78,7 +86,7 @@ export default function Launch() {
     content_items: encodeURIComponent(
       JSON.stringify({
         "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
-        "@graph": [contentItems[type]],
+        "@graph": [contentItem],
       })
     ),
   });
@@ -104,20 +112,22 @@ export default function Launch() {
       {isContentItemRequest && (
         <div>
           <h3 style={{ color: "blue" }}>Content Item Selection</h3>
-          <form action={launchData.content_item_return_url} method="post">
-            {Object.entries(contentItemResponse("LtiLinkItem")).map(
-              ([k, v]) => (
-                <input key={k} type="hidden" name={k} value={v} />
-              )
-            )}
-            <button type="submit">Return Link Content Item to Canvas</button>
-          </form>
-          <form action={launchData.content_item_return_url} method="post">
-            {Object.entries(contentItemResponse("FileItem")).map(([k, v]) => (
-              <input key={k} type="hidden" name={k} value={v} />
-            ))}
-            <button type="submit">Return File Content Item to Canvas</button>
-          </form>
+
+          {
+            contentItems.map(contentItem =>
+              <form key={contentItem.title}
+                    action={launchData.content_item_return_url}
+                    method="post"
+              >
+                {Object.entries(contentItemResponse(contentItem)).map(
+                  ([k, v]) => (
+                    <input key={k} type="hidden" name={k} value={v} />
+                  )
+                )}
+                <button type="submit">Return {contentItem.title}</button>
+              </form>
+            )
+          }
         </div>
       )}
       <h3>Launch Parameters</h3>
