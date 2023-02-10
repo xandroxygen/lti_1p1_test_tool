@@ -32,7 +32,7 @@ npm run dev
 ```
 
 This starts your app in development mode, rebuilding assets on file changes.
-Note that your tool url and domain will now be `localhost:3000` instead of the
+Note that your tool url and domain will now be `localhost:2918` instead of the
 deployed url and domain.
 
 ## Configuring with Canvas
