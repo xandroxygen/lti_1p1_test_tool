@@ -7,6 +7,6 @@ WORKDIR /usr/src/app
 RUN npm install
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 2918
 
 CMD ["npm", "run", "dev"]

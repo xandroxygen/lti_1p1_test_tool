@@ -37,7 +37,7 @@ deployed url and domain.
 
 ## Configuring with Canvas
 
-For LTI 1.1: navigate to this tool's home page (usually `http://localhost:3000`),
+For LTI 1.1: navigate to this tool's home page (usually `http://localhost:2918`),
 and follow the configuration and installations there.
 
 For LTI 1.3: This tool currently can only work with one `client_id` and one
