@@ -1,6 +1,9 @@
-import {ActionFunction, useActionData} from "remix";
-import {getType, LtiLaunchParams} from "~/ltiLaunchParams";
-import {CONTENT_ITEM_SELECTION, CONTENT_ITEM_SELECTION_REQUEST} from "~/placements.server";
+import { ActionFunction, useActionData } from "remix";
+import { getType, LtiLaunchParams } from "~/ltiLaunchParams";
+import {
+  CONTENT_ITEM_SELECTION,
+  CONTENT_ITEM_SELECTION_REQUEST,
+} from "~/placements.server";
 import getConfig from "~/config.server";
 
 export const action: ActionFunction = async ({ request }) => {
@@ -60,8 +63,8 @@ export default function Launch() {
       url: contentItemUrl,
       mediaType: "application/vnd.ims.lti.v1.ltilink",
       placementAdvice: {
-        presentationDocumentTarget: 'iframe'
-      }
+        presentationDocumentTarget: "iframe",
+      },
     },
 
     {
@@ -113,21 +116,20 @@ export default function Launch() {
         <div>
           <h3 style={{ color: "blue" }}>Content Item Selection</h3>
 
-          {
-            contentItems.map(contentItem =>
-              <form key={contentItem.title}
-                    action={launchData.content_item_return_url}
-                    method="post"
-              >
-                {Object.entries(contentItemResponse(contentItem)).map(
-                  ([k, v]) => (
-                    <input key={k} type="hidden" name={k} value={v} />
-                  )
-                )}
-                <button type="submit">Return {contentItem.title}</button>
-              </form>
-            )
-          }
+          {contentItems.map((contentItem) => (
+            <form
+              key={contentItem.title}
+              action={launchData.content_item_return_url}
+              method="post"
+            >
+              {Object.entries(contentItemResponse(contentItem)).map(
+                ([k, v]) => (
+                  <input key={k} type="hidden" name={k} value={v} />
+                )
+              )}
+              <button type="submit">Return {contentItem.title}</button>
+            </form>
+          ))}
         </div>
       )}
       <h3>Launch Parameters</h3>
