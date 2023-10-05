@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import config from "./config.server";
 import invariant from "tiny-invariant";
+import jwkToPem from "jwk-to-pem";
 
 export const verify = async (idToken: string) => {
   const env = config();
@@ -20,3 +21,19 @@ export const verify = async (idToken: string) => {
 
   return payload;
 };
+
+export const create = async (payload: any) => {
+  const env = config();
+  const privateKey = env.PRIVATE_JWK;
+  invariant(privateKey, "expected PRIVATE_JWK to be defined");
+
+  const privatePem = jwkToPem(JSON.parse(privateKey), { private: true });
+  const idToken = jwt.sign(payload, privatePem, {
+    keyid: "inst-lti-test-2022-11-07",
+    algorithm: "RS256",
+    audience: `https://${env.ISS}`,
+    issuer: env.CLIENT_ID,
+    expiresIn: "5m",
+  });
+  return idToken;
+}

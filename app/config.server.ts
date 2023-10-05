@@ -12,6 +12,9 @@ export default function config() {
   const PUBLIC_JWK = JSON.parse(process.env.PUBLIC_JWK || "{}");
   const OIDC_AUTH_REQUEST_URL = process.env.OIDC_AUTH_REQUEST_URL || "";
   const PLATFORM_JWKS_URL = process.env.PLATFORM_JWKS_URL || "";
+  const ISS = process.env.ISS || ""
+  const CLIENT_ID = process.env.CLIENT_ID || "";
+  const PRIVATE_JWK = process.env.PRIVATE_JWK || "";
 
   return {
     DOMAIN,
@@ -22,5 +25,8 @@ export default function config() {
     JWK_URL,
     OIDC_INITIATION_URL,
     PLATFORM_JWKS_URL,
+    ISS,
+    CLIENT_ID,
+    PRIVATE_JWK
   };
 }

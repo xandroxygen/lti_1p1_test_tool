@@ -9,6 +9,7 @@
     "@remix-run/vercel": "^1.2.3",
     "cross-env": "^7.0.3",
     "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "^3.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
