@@ -27,6 +27,7 @@ type LoginParams = {
   client_id: string;
   login_hint: string;
   lti_message_hint: string;
+  target_link_uri: string;
 };
 
 const requestData = (
