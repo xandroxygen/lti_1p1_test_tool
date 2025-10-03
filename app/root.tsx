@@ -1,23 +1,22 @@
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "remix";
-import type { MetaFunction } from "remix";
+} from "@remix-run/react";
+import type { MetaFunction } from "@remix-run/node";
 
-export const meta: MetaFunction = () => {
-  return { title: "LTI 1.1 Test Tool" };
-};
+export const meta: MetaFunction = () => [
+  { title: "LTI 1.1 Test Tool" },
+  { charset: "utf-8" },
+  { name: "viewport", content: "width=device-width,initial-scale=1" },
+];
 
 export default function App() {
   return (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
@@ -25,7 +24,6 @@ export default function App() {
         <Outlet />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

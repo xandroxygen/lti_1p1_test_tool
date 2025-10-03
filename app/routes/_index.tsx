@@ -1,4 +1,5 @@
-import {ActionFunction, Form, LoaderFunction, useActionData, useLoaderData} from "remix";
+import {ActionFunction, LoaderFunction} from "@remix-run/node";
+import {Form, useActionData, useLoaderData} from "@remix-run/react";
 import {Placement, PLACEMENTS} from "~/placements.server";
 import {buildXML, PlacementOptions, XMLOptions} from "~/xml.server";
 import {buildErrorTracker, SerializedErrorTracker} from "~/xmlBuilder/errorTracker.server";
@@ -66,10 +67,13 @@ export const loader: LoaderFunction = () => {
 };
 
 export default function Index() {
-  const data: IndexData = useActionData() || useLoaderData();
-  const xml = data?.xml;
-  const placements = data?.placements;
-  const errorTracker = data?.errorTracker;
+  const actionData = useActionData<IndexData>();
+  const loaderData = useLoaderData<IndexData>();
+  const data = actionData || loaderData;
+  
+  const xml = data.xml;
+  const placements = data.placements || [];
+  const errorTracker = data.errorTracker;
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
@@ -82,7 +86,7 @@ export default function Index() {
         </a>{" "}
         for information on these options)
       </p>
-      {errorTracker.hasErrors && (
+      {errorTracker?.hasErrors && (
         <p style={{ color: "red" }}>{errorTracker.text}</p>
       )}
       <Form method="post">
@@ -108,7 +112,7 @@ export default function Index() {
           <Field
             name="Custom Fields"
             description="(key=value, one per line)"
-            error={errorTracker.errors.custom_fields}
+            error={errorTracker?.errors?.custom_fields}
           >
             <textarea name="custom_fields" rows={3} cols={24}></textarea>
           </Field>
@@ -129,7 +133,7 @@ export default function Index() {
               <PlacementField
                 key={p.key}
                 placement={p}
-                active={p.key === "course_navigation"} // TODO move this to loader only
+                active={p.key === "course_navigation"}
               ></PlacementField>
             ))}
           </PlacementsList>
@@ -138,7 +142,7 @@ export default function Index() {
           Generate
         </button>
       </Form>
-      <XMLDisplay xml={xml} error={errorTracker.hasErrors}></XMLDisplay>
+      <XMLDisplay xml={xml} error={errorTracker?.hasErrors || false}></XMLDisplay>
     </div>
   );
 }

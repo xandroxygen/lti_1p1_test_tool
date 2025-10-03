@@ -1,4 +1,5 @@
-import { ActionFunction, useActionData } from "remix";
+import { ActionFunction } from "@remix-run/node";
+import { useActionData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { stateCookie } from "~/cookies";
 import { verify } from "~/jwt.server";
