@@ -1,4 +1,4 @@
-import { LoaderFunction, json, useLoaderData } from "remix";
+import { type LoaderFunction, json, useLoaderData } from "remix";
 import config from "~/config.server";
 import invariant from "tiny-invariant";
 
@@ -9,7 +9,9 @@ export const loader: LoaderFunction = async ({ request }) => {
   invariant(registrationToken, "expected registration_token in URL");
 
   // (GET oidc-config)
-  const oidcConfigUrl = url.searchParams.get("openid_configuration");
+  const oidcConfigUrl = url.searchParams
+    .get("openid_configuration")
+    ?.replace("https", "http");
   invariant(oidcConfigUrl, "expected openid_configuration in URL");
   const oidcResponse = await fetch(oidcConfigUrl, {
     headers: {
@@ -28,7 +30,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     grant_types: ["implicit", "client_credentials"],
     token_endpoint_auth_method: "private_key_jwt",
     application_type: "web",
-    scope: "",
+    scope: "https://canvas.instructure.com/lti/feature_flags/scope/show",
+    logo_uri: "https://static.thenounproject.com/png/131630-200.png",
     jwks_uri: env.JWK_URL,
     initiate_login_uri: env.OIDC_INITIATION_URL,
     redirect_uris: [env.LAUNCH_URL_1_3, `${env.LAUNCH_URL_1_3}2`],
@@ -38,6 +41,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       target_link_uri: env.LAUNCH_URL_1_3,
       description: "bare-bones 1.3 tool that kinda supports dynamic reg",
       "https://canvas.instructure.com/lti/privacy_level": "public",
+      "https://canvas.instructure.com/lti/tool_id": "vercel-dynamic-reg",
+      "https://canvas.instructure.com/lti/vendor": "XANDER",
       claims: [
         "sub",
         "iss",
@@ -52,9 +57,19 @@ export const loader: LoaderFunction = async ({ request }) => {
       messages: [
         {
           type: "LtiResourceLinkRequest",
-          placements: ["course_navigation"],
+          placements: ["https://canvas.instructure.com/lti/top_navigation"],
+          // "https://canvas.instructure.com/lti/display_type": "new_window",
+        },
+        {
+          type: "LtiDeepLinkingRequest",
+          placements: ["RichTextEditor"],
         },
       ],
+      "https://canvas.instructure.com/lti/content_migration": {
+        import_format: "json",
+        export_start_url: "https://example.com/api/v1/courses/export",
+        import_start_url: "https://example.com/api/v1/courses/import",
+      },
     },
   };
 
@@ -66,6 +81,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     },
     body: JSON.stringify(registration),
   });
+  console.log("registration response code:", res.status);
 
   return json(await res.json());
 };
@@ -80,7 +96,9 @@ export default function DynamicRegistration() {
   return (
     <div>
       <h1>Dynamic Registration</h1>
-      <button onClick={close}>Confirm and Close</button>
+      <button type="button" onClick={close}>
+        Confirm and Close
+      </button>
       <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );

@@ -56,6 +56,9 @@ export default function Launch() {
       title: "1.1 test link item (link)",
       url: contentItemUrl,
       mediaType: "application/vnd.ims.lti.v1.ltilink",
+      custom: {
+        type: "1_1_deep_linking",
+      },
     },
 
     {
@@ -76,7 +79,7 @@ export default function Launch() {
     },
   ];
 
-  const contentItemResponse = (contentItem: typeof contentItems[number]) => ({
+  const contentItemResponse = (contentItem: (typeof contentItems)[number]) => ({
     lti_message_type: CONTENT_ITEM_SELECTION,
     lti_version: launchData.lti_version,
     oauth_version: launchData.oauth_version,
