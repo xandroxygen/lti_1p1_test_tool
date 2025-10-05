@@ -58,7 +58,10 @@ export const loader: LoaderFunction = async ({ request }) => {
       messages: [
         {
           type: "LtiResourceLinkRequest",
-          placements: ["https://canvas.instructure.com/lti/top_navigation", "https://canvas.instructure.com/lti/account_navigation"],],
+          placements: [
+            "https://canvas.instructure.com/lti/top_navigation",
+            "https://canvas.instructure.com/lti/account_navigation",
+          ],
           // "https://canvas.instructure.com/lti/display_type": "new_window",
         },
         {
