@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { ActionFunction, json, useActionData } from "remix";
+import { ActionFunction, json } from "@remix-run/node";
+import { useActionData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import config from "~/config.server";
 import { v4 as uuid } from "uuid";

@@ -1,4 +1,4 @@
-import { createCookie } from "remix";
+import { createCookie } from "@remix-run/node";
 
 export const stateCookie = createCookie("state", {
   maxAge: 3600,

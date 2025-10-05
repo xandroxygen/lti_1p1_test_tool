@@ -14,7 +14,7 @@ export const PlacementField = ({
   const subProp = (k: string) => `${placement.key}[${k}]`;
 
   return (
-    <div>
+    <>
       <Field name="">
         <b>{placement.name}</b>
       </Field>
@@ -28,11 +28,13 @@ export const PlacementField = ({
       <Field name="Message Type">
         <select name={subProp("message_type")}>
           {(placement.types || ["basic_lti_request"]).map((type) => (
-            <option value={type}>{type}</option>
+            <option key={type} value={type}>
+              {type}
+            </option>
           ))}
         </select>
       </Field>
       <Visibility name={subProp("visibility")}></Visibility>
-    </div>
+    </>
   );
 };

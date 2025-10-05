@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "remix";
+import { Link } from "@remix-run/react";
 import { Field } from "./Field";
 
 export const Visibility = ({ name }: { name: string }) => (
@@ -52,32 +52,29 @@ export const PlacementsList = ({ children }: { children: React.ReactNode }) => {
   const onPlacementExpand = () => {
     const placementConfig = document.getElementById("placement-config");
     if (placementConfig) {
-      const value = placementConfig.style.display === "flex" ? "none" : "flex";
+      const value =
+        placementConfig.style.display === "table-row-group"
+          ? "none"
+          : "table-row-group";
       placementConfig.style.display = value;
     }
   };
 
   return (
     <>
-      <Field
-        name="Placements"
-        description="Defaults to only Course Navigation. Click button for more detailed options"
-      >
-        <button onClick={onPlacementExpand}>
-          Toggle Placement Configuration
-        </button>
-      </Field>
-      <div
-        id="placement-config"
-        style={{
-          display: "none",
-          flexDirection: "column",
-          flexWrap: "wrap",
-          maxHeight: "100em",
-        }}
-      >
+      <tbody>
+        <Field
+          name="Placements"
+          description="Defaults to only Course Navigation. Click button for more detailed options"
+        >
+          <button type="button" onClick={onPlacementExpand}>
+            Toggle Placement Configuration
+          </button>
+        </Field>
+      </tbody>
+      <tbody id="placement-config" style={{ display: "none" }}>
         {children}
-      </div>
+      </tbody>
     </>
   );
 };

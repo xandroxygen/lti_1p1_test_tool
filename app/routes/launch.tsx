@@ -1,4 +1,5 @@
-import { ActionFunction, useActionData } from "remix";
+import { ActionFunction } from "@remix-run/node";
+import { useActionData } from "@remix-run/react";
 import { getType, LtiLaunchParams } from "~/ltiLaunchParams";
 import {
   CONTENT_ITEM_SELECTION,
