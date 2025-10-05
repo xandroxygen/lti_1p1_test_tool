@@ -1,11 +1,19 @@
-import {ActionFunction, LoaderFunction} from "@remix-run/node";
-import {Form, useActionData, useLoaderData} from "@remix-run/react";
-import {Placement, PLACEMENTS} from "~/placements.server";
-import {buildXML, PlacementOptions, XMLOptions} from "~/xml.server";
-import {buildErrorTracker, SerializedErrorTracker} from "~/xmlBuilder/errorTracker.server";
-import {Field} from "~/xmlBuilder/Field";
-import {Header, PlacementsList, Visibility, XMLDisplay} from "~/xmlBuilder/misc";
-import {PlacementField} from "~/xmlBuilder/PlacementField";
+import { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Placement, PLACEMENTS } from "~/placements.server";
+import { buildXML, PlacementOptions, XMLOptions } from "~/xml.server";
+import {
+  buildErrorTracker,
+  SerializedErrorTracker,
+} from "~/xmlBuilder/errorTracker.server";
+import { Field } from "~/xmlBuilder/Field";
+import {
+  Header,
+  PlacementsList,
+  Visibility,
+  XMLDisplay,
+} from "~/xmlBuilder/misc";
+import { PlacementField } from "~/xmlBuilder/PlacementField";
 import buildValidators from "~/xmlBuilder/validators.server";
 
 type IndexData = {
@@ -70,7 +78,7 @@ export default function Index() {
   const actionData = useActionData<IndexData>();
   const loaderData = useLoaderData<IndexData>();
   const data = actionData || loaderData;
-  
+
   const xml = data.xml;
   const placements = data.placements || [];
   const errorTracker = data.errorTracker;
@@ -91,43 +99,45 @@ export default function Index() {
       )}
       <Form method="post">
         <table>
-          <Field name="Tool Name" inputName="tool_name"></Field>
-          <Field name="Description" inputName="description"></Field>
-          <Field name="Tool Domain" inputName="tool_domain"></Field>
-          <Field name="Launch URL" inputName="launch_url"></Field>
-          <Field name="Privacy Level">
-            <select name="privacy_level">
-              <option value="public">public</option>
-              <option value="name_only">name_only</option>
-              <option value="anonymous">anonymous</option>
-            </select>
-          </Field>
-          <Field
-            name="OAuth Compliant"
-            inputName="oauth_compliant"
-            type="checkbox"
-            description="Does not copy launch URL query parameters to POST body when true"
-          ></Field>
-          <Visibility name="visibility"></Visibility>
-          <Field
-            name="Custom Fields"
-            description="(key=value, one per line)"
-            error={errorTracker?.errors?.custom_fields}
-          >
-            <textarea name="custom_fields" rows={3} cols={24}></textarea>
-          </Field>
-          <Field
-            name="Selection Height"
-            inputName="selection_height"
-            type="number"
-            defaultValue="500"
-          ></Field>
-          <Field
-            name="Selection Width"
-            inputName="selection_width"
-            type="number"
-            defaultValue="500"
-          ></Field>
+          <tbody>
+            <Field name="Tool Name" inputName="tool_name"></Field>
+            <Field name="Description" inputName="description"></Field>
+            <Field name="Tool Domain" inputName="tool_domain"></Field>
+            <Field name="Launch URL" inputName="launch_url"></Field>
+            <Field name="Privacy Level">
+              <select name="privacy_level">
+                <option value="public">public</option>
+                <option value="name_only">name_only</option>
+                <option value="anonymous">anonymous</option>
+              </select>
+            </Field>
+            <Field
+              name="OAuth Compliant"
+              inputName="oauth_compliant"
+              type="checkbox"
+              description="Does not copy launch URL query parameters to POST body when true"
+            ></Field>
+            <Visibility name="visibility"></Visibility>
+            <Field
+              name="Custom Fields"
+              description="(key=value, one per line)"
+              error={errorTracker?.errors?.custom_fields}
+            >
+              <textarea name="custom_fields" rows={3} cols={24}></textarea>
+            </Field>
+            <Field
+              name="Selection Height"
+              inputName="selection_height"
+              type="number"
+              defaultValue="500"
+            ></Field>
+            <Field
+              name="Selection Width"
+              inputName="selection_width"
+              type="number"
+              defaultValue="500"
+            ></Field>
+          </tbody>
           <PlacementsList>
             {placements.map((p) => (
               <PlacementField
@@ -142,7 +152,10 @@ export default function Index() {
           Generate
         </button>
       </Form>
-      <XMLDisplay xml={xml} error={errorTracker?.hasErrors || false}></XMLDisplay>
+      <XMLDisplay
+        xml={xml}
+        error={errorTracker?.hasErrors || false}
+      ></XMLDisplay>
     </div>
   );
 }

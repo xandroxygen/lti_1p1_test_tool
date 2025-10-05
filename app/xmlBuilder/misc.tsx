@@ -52,27 +52,27 @@ export const PlacementsList = ({ children }: { children: React.ReactNode }) => {
   const onPlacementExpand = () => {
     const placementConfig = document.getElementById("placement-config");
     if (placementConfig) {
-      const value = placementConfig.style.display === "table-row-group" ? "none" : "table-row-group";
+      const value =
+        placementConfig.style.display === "table-row-group"
+          ? "none"
+          : "table-row-group";
       placementConfig.style.display = value;
     }
   };
 
   return (
     <>
-      <Field
-        name="Placements"
-        description="Defaults to only Course Navigation. Click button for more detailed options"
-      >
-        <button type="button" onClick={onPlacementExpand}>
-          Toggle Placement Configuration
-        </button>
-      </Field>
-      <tbody
-        id="placement-config"
-        style={{
-          display: "none",
-        }}
-      >
+      <tbody>
+        <Field
+          name="Placements"
+          description="Defaults to only Course Navigation. Click button for more detailed options"
+        >
+          <button type="button" onClick={onPlacementExpand}>
+            Toggle Placement Configuration
+          </button>
+        </Field>
+      </tbody>
+      <tbody id="placement-config" style={{ display: "none" }}>
         {children}
       </tbody>
     </>
